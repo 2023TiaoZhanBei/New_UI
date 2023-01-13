@@ -19,6 +19,7 @@ import sys
 import os
 import platform
 
+from PySide6 import QtGui
 from PySide6.QtCore import Signal
 
 from librarys.reaction import Reaction
@@ -26,21 +27,45 @@ from librarys.reaction import Reaction
 # ///////////////////////////////////////////////////////////////
 from modules import *
 from widgets import *
-from threading import Event
+from threading import Event, Thread
 from librarys.process import Identify
 from librarys.client import Client
+import cv2
 
 os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100%
+
 
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////
 
+class Timer(QObject):
+    count1s = Signal(int)
+    timeout = Signal()
+
+    def __init__(self):
+        super().__init__()
+        self._count = 3
+
+    def start(self):
+        Thread(target=self.run).start()
+
+    def run(self):
+        while self._count > 0:
+            self.count1s.emit(self._count)
+            self._count -= 1
+            time.sleep(1)
+        self.timeout.emit()
+        self._count = 3
+
 
 class MainWindow(QMainWindow):
     received = Signal(str)
+
     def __init__(self, app):
         QMainWindow.__init__(self)
-        
+
+        self.QtImg = None
+        self.dragPos = None
         self.app = app
 
         # SET AS GLOBAL WIDGETS
@@ -107,12 +132,36 @@ class MainWindow(QMainWindow):
         # SET HOME PAGE AND SELECT MENU
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
-        
+
         # Init Values
-        self.init_camera_values()
+        widgets.btn_start.clicked.connect(self.switch_camera_status)
+        self.eventRunning = Event()
+
+        self.member_list = []
+
+        self.received.connect(self.get_data)
+        self.isLogin = False
+        self.isTarget = False
+        self.isController = False
+        self.isControlling = False
+        self.ui.btn_get_ctrl.clicked.connect(self.get_ctrl)
+        self.type = 'receiver'
+        self.name = ''
+        self.target = ''
+        widgets.btn_join.clicked.connect(self.join)
+        self.ui.btn_pause.clicked.connect(self.switch_ctrl)
+        self.ui.checkBox.stateChanged.connect(self.switch_target)
+
+        self.reaction = Reaction()
+        # self.action_tutorials.triggered.connect(self.show_tutorials_win)
+        # self.action_help.triggered.connect(self.show_help_win)
 
     def closeEvent(self, a0) -> None:
         self.app.client.stop_ping()
+
+    def set_log(self, msg):
+        widgets.textBrowser.append(time.strftime("(%H:%M:%S)", time.localtime()) + ' ' + msg)
+        # widgets.textBrowser.moveCurso
 
     def join(self):
         # self.app.client.send(self.app.client.type)
@@ -128,32 +177,75 @@ class MainWindow(QMainWindow):
             self.show_error("请输入用户名")
             widgets.lineEdit.setFocus()
 
+    def set_gesture(self, msg: str):
+        self.ui.label_res.setText(msg)
+        if msg == "抓取":
+            if not self.isController:
+                self.get_ctrl()  # 按下获取控制按钮
+                self.switch_ctrl()
+            else:
+                self.switch_ctrl()
+                self.get_ctrl()
+            return
+        if self.isControlling:
+            if self.isTarget:
+                self.ui.textBrowser.append("控制本机：" + msg)
+                self.reaction.react(msg)
+                return
+            if self.isController:
+                self.set_log("你发出了指令：" + msg)
+                self.app.client.send("command " + msg)
+                return
+
+    # def _set_current_index(self, target_index):
+    #     # print(self.playlist.currentIndex(), target_index)
+    #     self.ui.btn_next.setText("下一个 >>")
+    #     if 0 <= target_index < len(self.gestures):
+    #         self.ui.player.pause()
+    #         self.playlist.setCurrentIndex(target_index)
+    #         self.player.play()
+    #         self.currentGes = self.gestures[target_index]
+    #     self._set_labels(False)
+    #     print(self.playlist.currentIndex())
+    #     self.btn_last.setEnabled(self.playlist.currentIndex() > 0)
+    #     self.btn_next.setEnabled(self.playlist.currentIndex() < len(self.gestures) - 1)
+
+    # def next(self):
+    #     self._set_current_index(self.playlist.currentIndex() + 1)
+    # def _next_sec(self, count: int):
+    #     self.ui.btn_next.setText("下一个({}) >>".format(str(count)))
+
+    def switch_ctrl(self):
+        if self.isController:
+            self.app.client.send("switch_control")
+            self.ui.btn_pause.setText("暂停控制" if self.ui.btn_pause.text() == "开始控制" else "开始控制")
+        else:
+            self.show_error("未获得控制权")
+
+    def switch_target(self):
+        if self.ui.checkBox.isChecked():
+            self.isTarget = True
+        else:
+            self.isTarget = False
+
+    def get_ctrl(self):
+        if self.isLogin:
+            if self.isController:
+                self.app.client.send("exchange_control")
+                # self.isController = False
+                self.ui.btn_get_ctrl.setText("获取控制")
+                self.ui.btn_pause.setText("开始控制")
+            else:
+                self.app.client.send("exchange_control")
+                self.isController = True
+                self.ui.btn_get_ctrl.setText("退出控制")
+                self.ui.btn_pause.setText("开始控制")
+        else:
+            self.show_error("尚未加入会议")
+            self.ui.lineEdit_2.setFocus()
 
     def show_error(self, msg: str):
         QMessageBox.information(self, "错误", msg)
-        
-    def init_camera_values(self):
-        widgets.btn_start.clicked.connect(self.switch_camera_status)
-        self.eventRunning = Event()
-
-        self.member_list = []
-
-        self.received.connect(self.get_data)
-        self.isLogin = False
-        self.isTarget = False
-        self.isController = False
-        self.isControlling = False
-        # self.btn_get_ctrl.clicked.connect(self.get_ctrl)
-        self.type = 'receiver'
-        self.name = ''
-        self.target = ''
-        widgets.btn_join.clicked.connect(self.join)
-        # self.btn_pause.clicked.connect(self.switch_ctrl)
-        # self.checkBox.stateChanged.connect(self.switch_target)
-
-        self.reaction = Reaction()
-        # self.action_tutorials.triggered.connect(self.show_tutorials_win)
-        # self.action_help.triggered.connect(self.show_help_win)
 
     def get_data(self, data: str):
         if data == 'pong':
@@ -171,7 +263,7 @@ class MainWindow(QMainWindow):
         elif splits[0] == 'change_controller':
             self.isControlling = False
             widgets.label_controller.setText(("正在控制：" if self.isControlling else "控制已暂停：")
-                                          + splits[1])
+                                             + splits[1])
             if splits[1] == self.name:
                 self.isController = True
                 widgets.btn_get_ctrl.setText("退出控制")
@@ -181,7 +273,7 @@ class MainWindow(QMainWindow):
         elif splits[0] == 'control_switched':
             self.isControlling = not self.isControlling
             widgets.label_controller.setText(("正在控制：" if self.isControlling else "控制已暂停：")
-                                          + splits[1])
+                                             + splits[1])
         elif splits[0] == 'member_list':
             self.member_list = splits[1:]
             self.init_list_view()
@@ -201,9 +293,7 @@ class MainWindow(QMainWindow):
 
     def clicked_list(self, q_model_index):
         self.target = self.member_list[q_model_index.row()]
-    def set_log(self, msg):
-        widgets.textBrowser.append(time.strftime("(%H:%M:%S)", time.localtime()) + ' ' + msg)
-        widgets.textBrowser.moveCursor(widgets.textBrowser.textCursor().End)
+
     def switch_camera_status(self):
         if self.eventRunning.isSet():
             widgets.label_img.setText("Hello\nWorld")
@@ -212,7 +302,17 @@ class MainWindow(QMainWindow):
         else:
             self.eventRunning.set()
             widgets.btn_start.setText("停止识别")
-    
+
+    def flash_img(self, image, ratio):
+        size = (int(self.ui.label_img.width()), int(self.ui.label_img.width() * ratio))
+        shrink = cv2.resize(image, size, interpolation=cv2.INTER_AREA)
+        # # cv2.imshow('img', shrink)
+        shrink = cv2.cvtColor(shrink, cv2.COLOR_BGR2RGB)
+        self.QtImg = QtGui.QImage(shrink.data, shrink.shape[1],
+                                  shrink.shape[0], shrink.shape[1] * 3,
+                                  QtGui.QImage.Format_RGB888)
+        self.ui.label_img.setPixmap(QtGui.QPixmap.fromImage(self.QtImg))
+
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
     def buttonClick(self):
@@ -238,7 +338,6 @@ class MainWindow(QMainWindow):
             UIFunctions.resetStyle(self, btnName)  # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))  # SELECT MENU
             widgets.btn_start.clicked.connect(self.switch)
-            
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
@@ -276,7 +375,7 @@ class App:
         self.identify.start()
         self.client.start()
         if not has_father_window:
-            sys.exit(self.qapp.exec_())
+            sys.exit(self.qapp.exec())
 
 
 if __name__ == "__main__":
