@@ -197,24 +197,6 @@ class MainWindow(QMainWindow):
                 self.app.client.send("command " + msg)
                 return
 
-    # def _set_current_index(self, target_index):
-    #     # print(self.playlist.currentIndex(), target_index)
-    #     self.ui.btn_next.setText("下一个 >>")
-    #     if 0 <= target_index < len(self.gestures):
-    #         self.ui.player.pause()
-    #         self.playlist.setCurrentIndex(target_index)
-    #         self.player.play()
-    #         self.currentGes = self.gestures[target_index]
-    #     self._set_labels(False)
-    #     print(self.playlist.currentIndex())
-    #     self.btn_last.setEnabled(self.playlist.currentIndex() > 0)
-    #     self.btn_next.setEnabled(self.playlist.currentIndex() < len(self.gestures) - 1)
-
-    # def next(self):
-    #     self._set_current_index(self.playlist.currentIndex() + 1)
-    # def _next_sec(self, count: int):
-    #     self.ui.btn_next.setText("下一个({}) >>".format(str(count)))
-
     def switch_ctrl(self):
         if self.isController:
             self.app.client.send("switch_control")
@@ -337,7 +319,6 @@ class MainWindow(QMainWindow):
             widgets.stackedWidget.setCurrentWidget(widgets.mainPage)  # SET PAGE
             UIFunctions.resetStyle(self, btnName)  # RESET ANOTHERS BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))  # SELECT MENU
-            widgets.btn_start.clicked.connect(self.switch)
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
