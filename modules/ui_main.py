@@ -1425,14 +1425,7 @@ class Ui_MainWindow(object):
 
         self.btn_start = QPushButton(self.window)
         self.btn_start.setObjectName(u"btn_start")
-        self.btn_start.setStyleSheet(u"color: rgb(255, 255, 255);\n"
-"\n"
-"/*background-color: rgb(85, 170, 255);*/\n"
-"\n"
-"padding:10px;\n"
-"\n"
-"border-radius:10px\n"
-"")
+        self.btn_start.setStyleSheet(u"background-color: #6272a4;")
 
         self.gridLayout_4.addWidget(self.btn_start, 6, 1, 1, 2)
 
