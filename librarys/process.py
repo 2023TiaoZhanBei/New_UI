@@ -173,7 +173,7 @@ class Identify:
                 confidence, rel = rel.max(1)
 
                 # 对每个动作设置单独的置信度阈值
-                cfd = {'点击': 0.90, '平移': 0.90, '缩放': 0.99, '抓取': 0.985, '旋转': 0.99, '无': 0, '截图': 0.99, '放大': 0.9}
+                cfd = {'点击': 0.90, '平移': 0.90, '缩放': 0.99, '抓取': 0.985, '旋转': 0.99, '无': 0, '截图': 0.95, '放大': 0.9}
                 if confidence > cfd[movement[rel.item()]]:  # 超过阈值的动作将会被输出
                     now_gesture = last_gesture
                     last_gesture = movement[rel.item()]
