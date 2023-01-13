@@ -372,7 +372,7 @@ class App:
         self.client = Client(self)
 
     def run(self, has_father_window=False):
-        self.identify.start()
+        # self.identify.start()
         self.client.start()
         if not has_father_window:
             sys.exit(self.qapp.exec())
