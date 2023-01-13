@@ -502,21 +502,16 @@ QCommandLinkButton:pressed {
 Button */
 #pagesContainer QPushButton {
 	border: 2px solid rgb(52, 59, 72);
-/*	padding:10px;*/
 	border-radius: 5px;
 	background-color: rgb(52, 59, 72);
 }
 #pagesContainer QPushButton:hover {
 	background-color: rgb(57, 65, 80);
 	border: 2px solid rgb(61, 70, 86);
-/*	padding:10px;*/
-/*	border-radius: 10px;*/
 }
 #pagesContainer QPushButton:pressed {	
 	background-color: rgb(35, 40, 49);
 	border: 2px solid rgb(43, 50, 61);
-/*	padding:10px;*/
-/*	border-radius: 10px;*/
 }
 
 /*MainPage*/
