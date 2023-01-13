@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainGmGeTh.ui'
+## Form generated from reading UI file 'mainKlzjHA.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.8
 ##
@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1211, 721)
+        MainWindow.resize(1278, 721)
         MainWindow.setMinimumSize(QSize(940, 560))
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
@@ -1179,7 +1179,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 322, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 351, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1388,8 +1388,7 @@ class Ui_MainWindow(object):
         self.window.setObjectName(u"window")
         self.window.setStyleSheet(u"QWidget#window{\n"
 "	font: 25 9pt \"\u5fae\u8f6f\u96c5\u9ed1 Light\";\n"
-"        border-radius:10px;\n"
-"\n"
+"    border-radius:10px;\n"
 "}")
         self.gridLayout_4 = QGridLayout(self.window)
         self.gridLayout_4.setSpacing(12)
@@ -1413,7 +1412,8 @@ class Ui_MainWindow(object):
 
         self.btn_join = QPushButton(self.window)
         self.btn_join.setObjectName(u"btn_join")
-        self.btn_join.setStyleSheet(u"background-color: rgb(52, 59, 72);\n")
+        self.btn_join.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_join.setStyleSheet(u"background-color: #6272a4;")
 
         self.gridLayout_4.addWidget(self.btn_join, 1, 1, 1, 2)
 
@@ -1425,13 +1425,9 @@ class Ui_MainWindow(object):
 
         self.btn_start = QPushButton(self.window)
         self.btn_start.setObjectName(u"btn_start")
-        self.btn_start.setStyleSheet(u"border:0px;\n"
+        self.btn_start.setStyleSheet(u"color: rgb(255, 255, 255);\n"
 "\n"
-"/*background-image:url(:/images/btn-menu-02.png);*/\n"
-"\n"
-"/*font:16px \"\u5fae\u8f6f\u96c5\u9ed1\";*/\n"
-"\n"
-"color: rgb(255, 255, 255);\n"
+"/*background-color: rgb(85, 170, 255);*/\n"
 "\n"
 "padding:10px;\n"
 "\n"
@@ -1442,18 +1438,8 @@ class Ui_MainWindow(object):
 
         self.btn_pause = QPushButton(self.window)
         self.btn_pause.setObjectName(u"btn_pause")
-        self.btn_pause.setStyleSheet(u"border:0px;\n"
-"\n"
-"/*background-image:url(:/images/btn-menu-02.png);*/\n"
-"\n"
-"/*font:16px \"\u5fae\u8f6f\u96c5\u9ed1\";*/\n"
-"\n"
-"color: rgb(255, 255, 255);\n"
-"\n"
-"padding:10px;\n"
-"\n"
-"border-radius:10px\n"
-"")
+        self.btn_pause.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_pause.setStyleSheet(u"background-color: #6272a4;")
 
         self.gridLayout_4.addWidget(self.btn_pause, 7, 2, 1, 1)
 
@@ -1490,18 +1476,9 @@ class Ui_MainWindow(object):
 
         self.btn_get_ctrl = QPushButton(self.window)
         self.btn_get_ctrl.setObjectName(u"btn_get_ctrl")
-        self.btn_get_ctrl.setStyleSheet(u"border:0px;\n"
-"\n"
-"/*background-image:url(:/images/btn-menu-02.png);*/\n"
-"\n"
-"/*font:16px \"\u5fae\u8f6f\u96c5\u9ed1\";*/\n"
-"\n"
-"color: rgb(255, 255, 255);\n"
-"\n"
-"padding:10px;\n"
-"\n"
-"border-radius:10px\n"
-"")
+        self.btn_get_ctrl.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_get_ctrl.setMouseTracking(True)
+        self.btn_get_ctrl.setStyleSheet(u"background-color: #6272a4;")
 
         self.gridLayout_4.addWidget(self.btn_get_ctrl, 7, 1, 1, 1)
 

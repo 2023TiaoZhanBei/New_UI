@@ -2718,8 +2718,7 @@ background-repeat: no-repeat;</string>
                          <property name="styleSheet">
                           <string notr="true">QWidget#window{
 	font: 25 9pt &quot;微软雅黑 Light&quot;;
-        border-radius:10px;
-
+    border-radius:10px;
 }</string>
                          </property>
                          <layout class="QGridLayout" name="gridLayout_4" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="8,0,0">
@@ -2765,21 +2764,11 @@ padding: 0 8px;</string>
                           </item>
                           <item row="1" column="1" colspan="2">
                            <widget class="QPushButton" name="btn_join">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="styleSheet">
-                             <string notr="true">border:0px;
-
-/*background-image:url(:/images/btn-menu-02.png);*/
-
-/*font:16px &quot;微软雅黑&quot;;*/
-
-color: rgb(255, 255, 255);
-
-background-color:rgb(52, 59, 72);
-
-padding:10px;
-
-border-radius:10px
-</string>
+                             <string notr="true">background-color: #6272a4;</string>
                             </property>
                             <property name="text">
                              <string>加入会议</string>
@@ -2799,15 +2788,9 @@ border-radius:10px
                           <item row="6" column="1" colspan="2">
                            <widget class="QPushButton" name="btn_start">
                             <property name="styleSheet">
-                             <string notr="true">border:0px;
+                             <string notr="true">color: rgb(255, 255, 255);
 
-/*background-image:url(:/images/btn-menu-02.png);*/
-
-/*font:16px &quot;微软雅黑&quot;;*/
-
-color: rgb(255, 255, 255);
-
-background-color: rgb(85, 170, 255);
+/*background-color: rgb(85, 170, 255);*/
 
 padding:10px;
 
@@ -2821,21 +2804,11 @@ border-radius:10px
                           </item>
                           <item row="7" column="2">
                            <widget class="QPushButton" name="btn_pause">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
                             <property name="styleSheet">
-                             <string notr="true">border:0px;
-
-/*background-image:url(:/images/btn-menu-02.png);*/
-
-/*font:16px &quot;微软雅黑&quot;;*/
-
-color: rgb(255, 255, 255);
-
-background-color: rgb(85, 170, 255);
-
-padding:10px;
-
-border-radius:10px
-</string>
+                             <string notr="true">background-color: #6272a4;</string>
                             </property>
                             <property name="text">
                              <string>开始控制</string>
@@ -2885,21 +2858,14 @@ font: 9pt &quot;微软雅黑&quot;;</string>
                           </item>
                           <item row="7" column="1">
                            <widget class="QPushButton" name="btn_get_ctrl">
+                            <property name="cursor">
+                             <cursorShape>PointingHandCursor</cursorShape>
+                            </property>
+                            <property name="mouseTracking">
+                             <bool>true</bool>
+                            </property>
                             <property name="styleSheet">
-                             <string notr="true">border:0px;
-
-/*background-image:url(:/images/btn-menu-02.png);*/
-
-/*font:16px &quot;微软雅黑&quot;;*/
-
-color: rgb(255, 255, 255);
-
-background-color: rgb(85, 170, 255);
-
-padding:10px;
-
-border-radius:10px
-</string>
+                             <string notr="true">background-color: #6272a4;</string>
                             </property>
                             <property name="text">
                              <string>获取控制</string>
