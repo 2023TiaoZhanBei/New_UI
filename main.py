@@ -21,6 +21,7 @@ import platform
 
 from PySide6 import QtGui
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QApplication
 
 from librarys.reaction import Reaction
 # IMPORT / GUI AND MODULES AND WIDGETS
@@ -38,31 +39,11 @@ os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////
 
-class Timer(QObject):
-    count1s = Signal(int)
-    timeout = Signal()
-
-    def __init__(self):
-        super().__init__()
-        self._count = 3
-
-    def start(self):
-        Thread(target=self.run).start()
-
-    def run(self):
-        while self._count > 0:
-            self.count1s.emit(self._count)
-            self._count -= 1
-            time.sleep(1)
-        self.timeout.emit()
-        self._count = 3
-
-
 class MainWindow(QMainWindow):
     received = Signal(str)
 
     def __init__(self, app):
-        QMainWindow.__init__(self)
+        super(MainWindow, self).__init__()
 
         self.QtImg = None
         self.dragPos = None
@@ -345,10 +326,12 @@ class MainWindow(QMainWindow):
 
 class App:
     def __init__(self):
-        super().__init__()
         self.qapp = QApplication(sys.argv)
-        self.qapp.setWindowIcon(QIcon("icon.ico"))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        # self.qapp.setWindowIcon(QIcon(u":/icons/images/images/PyDracula.png"))
         self.win = MainWindow(self)
+        self.win.setWindowIcon(icon)
         self.win.show()
         self.identify = Identify(self.win)
         self.client = Client(self)
@@ -357,7 +340,7 @@ class App:
         # self.identify.start()
         self.client.start()
         if not has_father_window:
-            sys.exit(self.qapp.exec())
+            sys.exit(self.qapp.exec_())
 
 
 if __name__ == "__main__":
