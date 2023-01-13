@@ -53,7 +53,7 @@ Left Menu */
 #topLogo {
 	background-color: rgb(33, 37, 43);
 	background-image: url(:/images/images/images/PyDracula.png);
-	background-position: centered;
+	background-position: center;
 	background-repeat: no-repeat;
 }
 #titleLeftApp { font: 63 12pt "Segoe UI Semibold"; }
@@ -514,5 +514,21 @@ Button */
 	border: 2px solid rgb(43, 50, 61);
 }
 
-
+/*MainPage*/
+#mainPage QPushButton {
+	background-position: left center;
+    background-repeat: no-repeat;
+	border: none;
+	border-left: 22px solid transparent;
+	background-color: transparent;
+	text-align: left;
+	padding-left: 44px;
+}
+#btn_join:hover {
+	background-color: rgb(40, 44, 52);
+}
+#mainPage QPushButton:pressed {
+	background-color: rgb(189, 147, 249);
+	color: rgb(255, 255, 255);
+}
 
