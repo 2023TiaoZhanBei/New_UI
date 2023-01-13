@@ -347,6 +347,7 @@ class App:
     def __init__(self):
         super().__init__()
         self.qapp = QApplication(sys.argv)
+        self.qapp.setWindowIcon(QIcon("icon.ico"))
         self.win = MainWindow(self)
         self.win.show()
         self.identify = Identify(self.win)
