@@ -97,9 +97,10 @@ class MainLandBall(FBall):
         x = e.x() - self.iniDragCor[0]
         y = e.y() - self.iniDragCor[1]
         cor = QPoint(x, y)
-        self.move(self.mapToParent(cor))  # 需要maptoparent一下才可以的,否则只是相对位置。
-        for i in self.balls:
-            i.move_related(e)
+        if not (self.balls[0].anim is not None and str(self.balls[0].anim.state()) == 'State.Running'):
+            self.move(self.mapToParent(cor))  # 需要maptoparent一下才可以的,否则只是相对位置。
+            for i in self.balls:
+                i.move_related(e)
 
     def mousePressEvent(self, e):
         self.move_start_time = time.time()
