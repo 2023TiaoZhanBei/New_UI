@@ -32,6 +32,8 @@ from threading import Event, Thread
 from librarys.process import Identify
 from librarys.client import Client
 import cv2
+from exp_py_files.anima_ball import MainLandBall
+from librarys import config_values as cfg
 
 os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100%
 
@@ -48,6 +50,8 @@ class MainWindow(QMainWindow):
         self.QtImg = None
         self.dragPos = None
         self.app = app
+
+        self.main_land_ball = MainLandBall(100, 'blue')
 
         # SET AS GLOBAL WIDGETS
         self.ui = Ui_MainWindow()
@@ -144,6 +148,12 @@ class MainWindow(QMainWindow):
         widgets.textBrowser.append(time.strftime("(%H:%M:%S)", time.localtime()) + ' ' + msg)
         # widgets.textBrowser.moveCurso
 
+    def expand_balls(self, status: bool):
+        if status:
+            self.main_land_ball.expand(cfg.move_length)
+        else:
+            self.main_land_ball.shrink()
+
     def join(self):
         # self.app.client.send(self.app.client.type)
         self.name = self.ui.lineEdit_2.text()
@@ -152,7 +162,9 @@ class MainWindow(QMainWindow):
             widgets.btn_join.setEnabled(False)
             widgets.lineEdit.setEnabled(False)
             widgets.btn_join.setText("已加入会议")
+            self.main_land_ball.show()
             self.isLogin = True
+            self.app.identify.control_ball_open_and_close.connect(self.expand_balls)
             self.app.identify.start()
         else:
             self.show_error("请输入用户名")
@@ -246,6 +258,7 @@ class MainWindow(QMainWindow):
             widgets.lineEdit.setFocus()
             widgets.btn_join.setEnabled(True)
             widgets.btn_join.setText("加入会议")
+
             self.isLogin = False
 
     def init_list_view(self):
