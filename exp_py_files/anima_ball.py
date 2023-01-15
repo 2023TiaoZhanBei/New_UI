@@ -19,7 +19,8 @@ class FBall(QDialog):
         self.ball_size = size
         self.ball_weight = QWidget(self)
         self.ball_weight.resize(size, size)
-        self.ball_weight.setStyleSheet(f'background-color: {color}; border-radius: {size // 2}px;')
+        # 加入Hover效果
+        self.ball_weight.setStyleSheet(f'background-color: {color}; border-radius: {size // 2}px; ')
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # 设置不能调整大小
@@ -27,7 +28,11 @@ class FBall(QDialog):
 
         self.setAttribute(Qt.WA_TranslucentBackground)
 
+        self.ball_weight.hoverEnterEvent = lambda e: print('Hover!!!!!!!!!!!')
+
         self.anim = None
+
+
 
     def expand(self, offset_x, offset_y):
         self.anim = QPropertyAnimation(self, b"pos")
@@ -51,6 +56,17 @@ class FBall(QDialog):
         cor = QPoint(x, y)
         self.move(self.mapToParent(cor))
 
+    # def event(self, event: PySide6.QtCore.QEvent) -> bool:
+    #    print(event.type())
+    #    return event
+
+    def enterEvent(self, event: PySide6.QtGui.QEnterEvent) -> None:
+        print('enter')
+        return super().enterEvent(event)
+
+    def leaveEvent(self, event: PySide6.QtCore.QEvent) -> None:
+        print('leave')
+        return super().leaveEvent(event)
 
 @dataclass
 class MainLandBall(FBall):
