@@ -13,33 +13,34 @@
 # https://doc.qt.io/qtforpython/licenses.html
 #
 # ///////////////////////////////////////////////////////////////
-import time
-from re import S
-import sys
 import os
 import platform
+import sys
+import time
+from re import S
+from threading import Event, Thread
 
+import cv2
 from PySide6 import QtGui
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication
 
+from exp_py_files.anima_ball import MainLandBall
+from librarys import config_values as cfg
+from librarys.client import Client
+from librarys.process import Identify
 from librarys.reaction import Reaction
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 from modules import *
 from widgets import *
-from threading import Event, Thread
-from librarys.process import Identify
-from librarys.client import Client
-import cv2
-from exp_py_files.anima_ball import MainLandBall
-from librarys import config_values as cfg
 
 os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100%
 
 
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////
+
 
 class MainWindow(QMainWindow):
     received = Signal(str)
@@ -51,7 +52,7 @@ class MainWindow(QMainWindow):
         self.dragPos = None
         self.app = app
 
-        self.main_land_ball = MainLandBall(100, 'blue')
+        self.main_land_ball = MainLandBall(100, "blue")
 
         # SET AS GLOBAL WIDGETS
         self.ui = Ui_MainWindow()
@@ -116,7 +117,9 @@ class MainWindow(QMainWindow):
 
         # SET HOME PAGE AND SELECT MENU
         widgets.stackedWidget.setCurrentWidget(widgets.home)
-        widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
+        widgets.btn_home.setStyleSheet(
+            UIFunctions.selectMenu(widgets.btn_home.styleSheet())
+        )
 
         # Init Values
         widgets.btn_start.clicked.connect(self.switch_camera_status)
@@ -130,9 +133,9 @@ class MainWindow(QMainWindow):
         self.isController = False
         self.isControlling = False
         self.ui.btn_get_ctrl.clicked.connect(self.get_ctrl)
-        self.type = 'receiver'
-        self.name = ''
-        self.target = ''
+        self.type = "receiver"
+        self.name = ""
+        self.target = ""
         widgets.btn_join.clicked.connect(self.join)
         self.ui.btn_pause.clicked.connect(self.switch_ctrl)
         self.ui.checkBox.stateChanged.connect(self.switch_target)
@@ -145,7 +148,9 @@ class MainWindow(QMainWindow):
         self.app.client.stop_ping()
 
     def set_log(self, msg):
-        widgets.textBrowser.append(time.strftime("(%H:%M:%S)", time.localtime()) + ' ' + msg)
+        widgets.textBrowser.append(
+            time.strftime("(%H:%M:%S)", time.localtime()) + " " + msg
+        )
         # widgets.textBrowser.moveCurso
 
     def expand_balls(self, status: bool):
@@ -157,7 +162,7 @@ class MainWindow(QMainWindow):
     def join(self):
         # self.app.client.send(self.app.client.type)
         self.name = self.ui.lineEdit_2.text()
-        if self.name != '':
+        if self.name != "":
             self.app.client.send(self.name)  # 发送用户名
             widgets.btn_join.setEnabled(False)
             widgets.lineEdit.setEnabled(False)
@@ -193,7 +198,9 @@ class MainWindow(QMainWindow):
     def switch_ctrl(self):
         if self.isController:
             self.app.client.send("switch_control")
-            self.ui.btn_pause.setText("暂停控制" if self.ui.btn_pause.text() == "开始控制" else "开始控制")
+            self.ui.btn_pause.setText(
+                "暂停控制" if self.ui.btn_pause.text() == "开始控制" else "开始控制"
+            )
         else:
             self.show_error("未获得控制权")
 
@@ -223,36 +230,38 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, "错误", msg)
 
     def get_data(self, data: str):
-        if data == 'pong':
+        if data == "pong":
             return
-        elif data == 'ping':
+        elif data == "ping":
             self.app.client.timer.start()
             return
-        splits = data.split(' ')
-        if splits[0] == 'command':
+        splits = data.split(" ")
+        if splits[0] == "command":
             self.set_log("控制者发出指令：" + splits[1])
             if self.isTarget:
                 # 响应指令：pyuserinput
                 self.reaction.react(splits[1])
 
-        elif splits[0] == 'change_controller':
+        elif splits[0] == "change_controller":
             self.isControlling = False
-            widgets.label_controller.setText(("正在控制：" if self.isControlling else "控制已暂停：")
-                                             + splits[1])
+            widgets.label_controller.setText(
+                ("正在控制：" if self.isControlling else "控制已暂停：") + splits[1]
+            )
             if splits[1] == self.name:
                 self.isController = True
                 widgets.btn_get_ctrl.setText("退出控制")
             else:
                 self.isController = False
                 widgets.btn_get_ctrl.setText("获取控制")
-        elif splits[0] == 'control_switched':
+        elif splits[0] == "control_switched":
             self.isControlling = not self.isControlling
-            widgets.label_controller.setText(("正在控制：" if self.isControlling else "控制已暂停：")
-                                             + splits[1])
-        elif splits[0] == 'member_list':
+            widgets.label_controller.setText(
+                ("正在控制：" if self.isControlling else "控制已暂停：") + splits[1]
+            )
+        elif splits[0] == "member_list":
             self.member_list = splits[1:]
             self.init_list_view()
-        elif splits[0] == 'duplicate_name':
+        elif splits[0] == "duplicate_name":
             self.show_error("用户名已存在，请修改")
             widgets.lineEdit.setEnabled(True)
             widgets.lineEdit.setFocus()
@@ -284,9 +293,13 @@ class MainWindow(QMainWindow):
         shrink = cv2.resize(image, size, interpolation=cv2.INTER_AREA)
         # # cv2.imshow('img', shrink)
         shrink = cv2.cvtColor(shrink, cv2.COLOR_BGR2RGB)
-        self.QtImg = QtGui.QImage(shrink.data, shrink.shape[1],
-                                  shrink.shape[0], shrink.shape[1] * 3,
-                                  QtGui.QImage.Format_RGB888)
+        self.QtImg = QtGui.QImage(
+            shrink.data,
+            shrink.shape[1],
+            shrink.shape[0],
+            shrink.shape[1] * 3,
+            QtGui.QImage.Format_RGB888,
+        )
         self.ui.label_img.setPixmap(QtGui.QPixmap.fromImage(self.QtImg))
 
     # BUTTONS CLICK
@@ -332,9 +345,9 @@ class MainWindow(QMainWindow):
 
         # PRINT MOUSE EVENTS
         if event.buttons() == Qt.LeftButton:
-            print('Mouse click: LEFT CLICK')
+            print("Mouse click: LEFT CLICK")
         if event.buttons() == Qt.RightButton:
-            print('Mouse click: RIGHT CLICK')
+            print("Mouse click: RIGHT CLICK")
 
 
 class App:

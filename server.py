@@ -1,9 +1,9 @@
 import socket
-from io import *
-from threading import *
+
+from threading import Thread
 from typing import List
 
-SERVER_HOST = '0.0.0.0'
+SERVER_HOST = "0.0.0.0"
 SERVER_PORT = 12345
 
 
@@ -29,24 +29,24 @@ class ClientServer(Thread):
         Thread.__init__(self)
         self.socket = ss
         self.addr = addr
-        self.type = 'unknown'
-        self.name = ''
+        self.type = "unknown"
+        self.name = ""
         self.controlling = False
 
     def read(self, size: int):
-        buf = b''
+        buf = b""
         while len(buf) < size:
             buf += self.socket.recv(size - len(buf))
         return buf
 
     def readline(self, size: int = 32 * 1024):
-        buf = b''
+        buf = b""
         while len(buf) < size:
             buf += self.socket.recv(1)  # 接收一个信息，并指定接收的大小最大为1字节
             if buf[-1] == 10:
                 break
         buf = buf[:-1]
-        return buf.decode('utf8')
+        return buf.decode("utf8")
 
     def run(self):
         try:
@@ -61,18 +61,18 @@ class ClientServer(Thread):
             print("已关闭链接：" + self.name)
 
     def handle(self):
-        print('client connected', self.addr)
+        print("client connected", self.addr)
 
         firstLine = self.readline()
         if firstLine == "receiver":
-            self.type = 'receiver'
+            self.type = "receiver"
             print("接收者接入")
         elif firstLine == "controller":
-            self.type = 'controller'
+            self.type = "controller"
             self.controlling = True
             print("控制者接入")
         else:
-            self.socket.send(b'Who are you?')
+            self.socket.send(b"Who are you?")
             return
 
         self.name = self.readline()
@@ -88,21 +88,21 @@ class ClientServer(Thread):
             # 接收
             line: str = self.readline()
             print(self.addr, line)
-            splits = line.split(' ')
-            if splits[0] == 'command':
-                if self.type == 'receiver' or not self.controlling:  # 如果自己是接收者则不发送
+            splits = line.split(" ")
+            if splits[0] == "command":
+                if self.type == "receiver" or not self.controlling:  # 如果自己是接收者则不发送
                     continue
                 # 发送给每个接收者
                 self.send_to_receiver(line)
-            elif splits[0] == 'exchange_control':
+            elif splits[0] == "exchange_control":
                 self.exchange_control()
-            elif splits[0] == 'switch_control':
+            elif splits[0] == "switch_control":
                 self.switch_control()
             else:
-                print('Unknown message:', line)
+                print("Unknown message:", line)
 
     def get_list(self):
-        member_list = 'member_list ' + ' '.join([c.name for c in clients])
+        member_list = "member_list " + " ".join([c.name for c in clients])
         for c in clients:
             c.try_send(member_list)
 
@@ -113,23 +113,23 @@ class ClientServer(Thread):
         return True
 
     def exchange_control(self):
-        if self.type == 'receiver':
+        if self.type == "receiver":
             print("接收者入栈")
             push(self.name)
             for c in clients:
-                if c.type == 'controller':
-                    c.type = 'receiver'
-            self.type = 'controller'
+                if c.type == "controller":
+                    c.type = "receiver"
+            self.type = "controller"
             self.controlling = True
-        elif self.type == 'controller':
+        elif self.type == "controller":
             print("控制者出栈")
             pop()
-            self.type = 'receiver'
+            self.type = "receiver"
             self.controlling = False
             if controller_stack:
                 for c in clients:
                     if c.name == controller_stack[-1]:
-                        c.type = 'controller'
+                        c.type = "controller"
                         c.controlling = True
 
         top()
@@ -140,19 +140,19 @@ class ClientServer(Thread):
         print(controller_stack)
 
     def switch_control(self):
-        if self.type == 'controller':
+        if self.type == "controller":
             for c in clients:
-                c.try_send(('control_switched ' + self.name))
+                c.try_send(("control_switched " + self.name))
 
     def send_to_receiver(self, msg: str):
         print("搜索并发送给接收者...")
         for c in clients:
-            if c.type == 'receiver':
+            if c.type == "receiver":
                 c.try_send(msg)
 
     def send(self, data):
         if type(data) == str:
-            data = (data + '\n').encode('utf8')
+            data = (data + "\n").encode("utf8")
         self.socket.send(data)
 
     def try_send(self, data):
@@ -181,7 +181,9 @@ def pop():
 
 def top():
     for c in clients:
-        c.try_send('change_controller ' + (controller_stack[-1] if controller_stack else ' '))
+        c.try_send(
+            "change_controller " + (controller_stack[-1] if controller_stack else " ")
+        )
 
 
 clients: List[ClientServer] = []

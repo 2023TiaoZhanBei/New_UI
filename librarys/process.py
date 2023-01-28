@@ -47,6 +47,8 @@ class Identify(QObject):
 
     def __init__(self, win):
         super().__init__()
+        self.prin_time = None
+        self.h_t = None
         self.win = win
         self.isEnd = False
 
@@ -65,11 +67,11 @@ class Identify(QObject):
         hiddem_dim = 30  # 隐藏层大小
         num_layers = 2  # GRU层数
 
-        h_t = torch.zeros(num_layers, 1, hiddem_dim)  # 初始化全0的h_t
-        h_t = h_t.to(device)  # 载入设备
+        self.h_t = torch.zeros(num_layers, 1, hiddem_dim)  # 初始化全0的h_t
+        self.h_t = self.h_t.to(device)  # 载入设备
 
         last_gesture = '无'  # 初始化最后输出，用于判断是否与当前输出一致
-        prin_time = time.time()  # 初始化输出时间
+        self.prin_time = time.time()  # 初始化输出时间
 
         mp_drawing = mp.solutions.drawing_utils  # 坐标点绘制工具
         mp_hands = mp.solutions.hands
@@ -133,7 +135,7 @@ class Identify(QObject):
 
             _, in_dim = self.draw_finger_and_get_indim(image, in_dim, mp_drawing, mp_hands, cfg.detector.hands)
 
-            self.reaction(device, h_t, hiddem_dim, in_dim, last_gesture, model, movement, num_layers, prin_time)
+            self.reaction(device, self.h_t, hiddem_dim, in_dim, last_gesture, model, movement, num_layers, self.prin_time)
 
             # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -288,8 +290,8 @@ class Identify(QObject):
                 if time.time() - prin_time > 2:  # 若距离上次输出时间小于2秒，则不输出
                     # print(movement[rel.item()], ' \t置信度：', round(confidence.item(), 2))
                     self.win.set_gesture(movement[rel.item()])
-                    prin_time = time.time()  # 重置输出时间
-                    h_t = torch.zeros(num_layers, 1, hiddem_dim).to(device)  # 将当前的h_t重置
+                    self.prin_time = time.time()  # 重置输出时间
+                    self.h_t = torch.zeros(num_layers, 1, hiddem_dim).to(device)  # 将当前的h_t重置
 
     def draw_finger_and_get_indim(self, image, in_dim, mp_drawing, mp_hands, hands):
         image.flags.writeable = False
