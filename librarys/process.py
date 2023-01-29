@@ -2,13 +2,13 @@ import math
 import sys
 import threading
 import time
+from collections import deque
 
 import cv2
-import mediapipe as mp
 import numpy as np
 import torch
 import torch.nn as nn
-from pynput.mouse import Button, Controller
+from pynput.mouse import Button
 from PySide6.QtCore import QObject, Signal
 
 sys.path.append("./librarys")
@@ -60,6 +60,7 @@ class Identify(QObject):
         self.h_t = None
         self.win = win
         self.isEnd = False
+        self.in_dim_stack = deque(maxlen=30)
 
     def start(self):
         threading.Thread(target=self.run).start()
@@ -80,7 +81,7 @@ class Identify(QObject):
         device = torch.device("cpu")  # 初始化于cpu上处理
         if torch.cuda.is_available():  # 判断是否能使用cuda
             device = torch.device("cuda:0")
-        model = torch.load(r"model.pt", map_location="cpu").to(device)  # 载入模型
+        model = torch.load(r"model_cnn.pt", map_location="cpu").to(device)  # 载入模型
         # print(model)
         hiddem_dim = 30  # 隐藏层大小
         num_layers = 2  # GRU层数
@@ -135,6 +136,7 @@ class Identify(QObject):
             _, in_dim = self.draw_finger_and_get_indim(
                 image, in_dim, mp_drawing, mp_hands, cfg.detector.hands
             )
+            self.in_dim_stack.append(in_dim)    
 
             # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -367,39 +369,46 @@ class Identify(QObject):
         num_layers,
         prin_time,
     ):
-        in_dim = in_dim.unsqueeze(dim=0)
-        in_dim = in_dim.unsqueeze(dim=0)
-        in_dim = in_dim.to(torch.float32).to(device)
-        self.h_t = self.h_t.to(torch.float32).to(device)
-        if time.time() - prin_time < 2:
-            in_dim = torch.zeros(1, 1, 126).to(device)
-        rel, self.h_t = model((in_dim, self.h_t))
-        rel = torch.sigmoid(rel)
-        print(rel)
-        confidence, rel = rel.max(1)
-        # 对每个动作设置单独的置信度阈值
-        cfd = {
-            "点击": 0.98,
-            "平移": 0.9,
-            "缩放": 0.95,
-            "抓取": 0.99,
-            "旋转": 0.99,
-            "无": 0,
-            "截图": 0.99,
-            "放大": 0.999,
-        }
-        print(movement[rel.item()], " \t置信度：", round(confidence.item(), 2))
-        if confidence > cfd[movement[rel.item()]]:  # 超过阈值的动作将会被输出
-            now_gesture = last_gesture
-            last_gesture = movement[rel.item()]
-            if not (now_gesture == last_gesture):  # 判断是否与上次的输出相同，若相同则不输出
-                if time.time() - prin_time > 2:  # 若距离上次输出时间小于2秒，则不输出
+        if len(self.in_dim_stack) == 30:
+            in_dims = list(self.in_dim_stack)
+            in_dims = np.stack(in_dims, axis=0)
+            in_dims = torch.from_numpy(in_dims).float()
 
-                    self.win.set_gesture(movement[rel.item()])
-                    self.prin_time = time.time()  # 重置输出时间
-                    self.h_t = torch.zeros(num_layers, 1, hiddem_dim).to(
-                        device
-                    )  # 将当前的h_t重置
+            # in_dim = in_dim.unsqueeze(dim=0)
+            in_dims = in_dims.unsqueeze(dim=0)
+            print(in_dims.shape)
+            in_dims = in_dims.to(torch.float32).to(device)
+            self.h_t = self.h_t.to(torch.float32).to(device)
+            if time.time() - prin_time < 2:
+                in_dims = torch.zeros(1, 30, 126).to(device)
+            # rel, self.h_t = model((in_dim, self.h_t))
+            rel = model(in_dims)
+            rel = torch.sigmoid(rel)
+            # print(rel)
+            confidence, rel = rel.max(1)
+            # 对每个动作设置单独的置信度阈值
+            cfd = {
+                "点击": 0.47,
+                "平移": 0.997,
+                "缩放": 0.85,
+                "抓取": 0.992,
+                "旋转": 0.98,
+                "无": 0,
+                "截图": 0.87,
+                "放大": 0.4,
+            }
+            print(movement[rel.item()], " \t置信度：", round(confidence.item(), 2))
+            if confidence > cfd[movement[rel.item()]]:  # 超过阈值的动作将会被输出
+                now_gesture = last_gesture
+                last_gesture = movement[rel.item()]
+                if not (now_gesture == last_gesture):  # 判断是否与上次的输出相同，若相同则不输出
+                    if time.time() - prin_time > 2:  # 若距离上次输出时间小于2秒，则不输出
+
+                        self.win.set_gesture(movement[rel.item()])
+                        self.prin_time = time.time()  # 重置输出时间
+                        self.h_t = torch.zeros(num_layers, 1, hiddem_dim).to(
+                            device
+                        )  # 将当前的h_t重置
 
     def draw_finger_and_get_indim(self, image, in_dim, mp_drawing, mp_hands, hands):
         image.flags.writeable = False
