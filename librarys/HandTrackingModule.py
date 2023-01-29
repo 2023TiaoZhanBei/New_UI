@@ -1,10 +1,10 @@
+import math
+
 import cv2
 import mediapipe as mp
-import math
 
 
 class HandDetector:
-
     def __init__(self, mode=False, maxHands=2, detectionCon=0.5, minTrackCon=0.5):
         self.mode = mode
         self.maxHands = maxHands
@@ -12,9 +12,12 @@ class HandDetector:
         self.minTrackCon = minTrackCon
 
         self.mpHands = mp.solutions.hands
-        self.hands = self.mpHands.Hands(static_image_mode=self.mode, max_num_hands=self.maxHands,
-                                        min_detection_confidence=self.detectionCon,
-                                        min_tracking_confidence=self.minTrackCon)
+        self.hands = self.mpHands.Hands(
+            static_image_mode=self.mode,
+            max_num_hands=self.maxHands,
+            min_detection_confidence=self.detectionCon,
+            min_tracking_confidence=self.minTrackCon,
+        )
         self.mpDraw = mp.solutions.drawing_utils
         self.tipIds = [4, 8, 12, 16, 20]
         self.fingers = []
@@ -35,9 +38,11 @@ class HandDetector:
         allHands = []
         h, w, c = img.shape
         if self.results.multi_hand_landmarks:
-            for handType, handLms in zip(self.results.multi_handedness, self.results.multi_hand_landmarks):
+            for handType, handLms in zip(
+                self.results.multi_handedness, self.results.multi_hand_landmarks
+            ):
                 myHand = {}
-                ## lmList
+                # lmList
                 mylmList = []
                 xList = []
                 yList = []
@@ -52,8 +57,7 @@ class HandDetector:
                 ymin, ymax = min(yList), max(yList)
                 boxW, boxH = xmax - xmin, ymax - ymin
                 bbox = xmin, ymin, boxW, boxH
-                cx, cy = bbox[0] + (bbox[2] // 2), \
-                         bbox[1] + (bbox[3] // 2)
+                cx, cy = bbox[0] + (bbox[2] // 2), bbox[1] + (bbox[3] // 2)
 
                 myHand["lmList"] = mylmList
                 myHand["bbox"] = bbox
@@ -70,33 +74,52 @@ class HandDetector:
 
                 ## draw
                 if draw:
-                    self.mpDraw.draw_landmarks(img, handLms,
-                                               self.mpHands.HAND_CONNECTIONS)
-                    cv2.rectangle(img, (bbox[0] - 20, bbox[1] - 20),
-                                  (bbox[0] + bbox[2] + 20, bbox[1] + bbox[3] + 20),
-                                  (255, 0, 255), 2)
-                    cv2.putText(img, myHand["type"], (bbox[0] - 30, bbox[1] - 30), cv2.FONT_HERSHEY_PLAIN,
-                                2, (255, 0, 255), 2)
+                    self.mpDraw.draw_landmarks(
+                        img, handLms, self.mpHands.HAND_CONNECTIONS
+                    )
+                    cv2.rectangle(
+                        img,
+                        (bbox[0] - 20, bbox[1] - 20),
+                        (bbox[0] + bbox[2] + 20, bbox[1] + bbox[3] + 20),
+                        (255, 0, 255),
+                        2,
+                    )
+                    cv2.putText(
+                        img,
+                        myHand["type"],
+                        (bbox[0] - 30, bbox[1] - 30),
+                        cv2.FONT_HERSHEY_PLAIN,
+                        2,
+                        (255, 0, 255),
+                        2,
+                    )
         if draw:
             return allHands, img
         else:
             return allHands
 
     def vector_2d_angle(self, v1, v2):
-        '''
-            求解二维向量的角度
-        '''
+        """
+        求解二维向量的角度
+        """
         v1_x = v1[0]
         v1_y = v1[1]
         v2_x = v2[0]
         v2_y = v2[1]
         try:
-            angle_ = math.degrees(math.acos(
-                (v1_x * v2_x + v1_y * v2_y) / (((v1_x ** 2 + v1_y ** 2) ** 0.5) * ((v2_x ** 2 + v2_y ** 2) ** 0.5))))
+            angle_ = math.degrees(
+                math.acos(
+                    (v1_x * v2_x + v1_y * v2_y)
+                    / (
+                        ((v1_x**2 + v1_y**2) ** 0.5)
+                        * ((v2_x**2 + v2_y**2) ** 0.5)
+                    )
+                )
+            )
         except:
-            angle_ = 65535.
-        if angle_ > 180.:
-            angle_ = 65535.
+            angle_ = 65535.0
+        if angle_ > 180.0:
+            angle_ = 65535.0
         return angle_
 
     def fingersUp(self, lmList):
@@ -135,8 +158,14 @@ class HandDetector:
         #         )
 
         thumb_angle = self.vector_2d_angle(
-            ((int(lmList[0][1]) - int(lmList[2][1])), (int(lmList[0][2]) - int(lmList[2][2]))),
-            ((int(lmList[3][1]) - int(lmList[4][1])), (int(lmList[3][2]) - int(lmList[4][2])))
+            (
+                (int(lmList[0][1]) - int(lmList[2][1])),
+                (int(lmList[0][2]) - int(lmList[2][2])),
+            ),
+            (
+                (int(lmList[3][1]) - int(lmList[4][1])),
+                (int(lmList[3][2]) - int(lmList[4][2])),
+            ),
         )
 
         if thumb_angle < 60:
@@ -148,7 +177,9 @@ class HandDetector:
             id, x1, y1 = lmList[point[0]]
             id, x2, y2 = lmList[point[1]]
 
-            if math.hypot(x2 - originx, y2 - originy) > math.hypot(x1 - originx, y1 - originy):
+            if math.hypot(x2 - originx, y2 - originy) > math.hypot(
+                x1 - originx, y1 - originy
+            ):
                 fingerList.append(1)
             else:
                 fingerList.append(0)
@@ -186,7 +217,7 @@ class HandDetector:
             myHand = self.results.multi_hand_landmarks[handNo]
             # 获取手腕处的z
             cz0 = myHand.landmark[0].z
-            print(f'Depth: {cz0}')
+            print(f"Depth: {cz0}")
             for id, lm in enumerate(myHand.landmark):
                 h, w, c = img.shape
                 cx, cy, cz = int(lm.x * w), int(lm.y * h), lm.z
@@ -203,4 +234,3 @@ class HandDetector:
             ymin, ymax = min(yList), max(yList)
             bbox = xmin, ymin, xmax, ymax
         return self.lmList, bbox, radius
-

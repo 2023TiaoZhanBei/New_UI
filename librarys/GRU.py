@@ -1,5 +1,5 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
 
 
 class GRU(nn.Module):
@@ -8,11 +8,18 @@ class GRU(nn.Module):
         self.in_dim = in_dim
         self.hidden_dim = hidden_dim
         self.num_layer = num_layer  # GRU网络层数
-        self.lstm = nn.GRU(input_size=in_dim, hidden_size=hidden_dim, num_layers=num_layer, batch_first=True,
-                           dropout=0.5)
+        self.lstm = nn.GRU(
+            input_size=in_dim,
+            hidden_size=hidden_dim,
+            num_layers=num_layer,
+            batch_first=True,
+            dropout=0.5,
+        )
         self.relu = nn.PReLU()  # PReLU激活函数，防止死亡ReLU问题
         self.classes = nn.Sequential(
-            nn.Linear(in_features=hidden_dim, out_features=num_classes),  # num_classes为分类数
+            nn.Linear(
+                in_features=hidden_dim, out_features=num_classes
+            ),  # num_classes为分类数
         )
 
     def forward(self, x):

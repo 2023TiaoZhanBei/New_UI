@@ -30,6 +30,7 @@ from librarys import config_values as cfg
 from librarys.client import Client
 from librarys.process import Identify
 from librarys.reaction import Reaction
+
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 from modules import *
@@ -289,10 +290,8 @@ class MainWindow(QMainWindow):
             widgets.btn_start.setText("停止识别")
 
     def flash_img(self, image, ratio):
-        size = (int(self.ui.label_img.width()), int(self.ui.label_img.width() * ratio))
-        shrink = cv2.resize(image, size, interpolation=cv2.INTER_AREA)
         # # cv2.imshow('img', shrink)
-        shrink = cv2.cvtColor(shrink, cv2.COLOR_BGR2RGB)
+        shrink = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         self.QtImg = QtGui.QImage(
             shrink.data,
             shrink.shape[1],
