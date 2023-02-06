@@ -382,15 +382,17 @@ class Identify(QObject):
             if time.time() - prin_time < 2:
                 in_dims = torch.zeros(1, 30, 126).to(device)
             # rel, self.h_t = model((in_dim, self.h_t))
+            t1 = time.time()
             rel = model(in_dims)
             rel = torch.sigmoid(rel)
+            print(time.time() - t1)
             # print(rel)
             confidence, rel = rel.max(1)
             # 对每个动作设置单独的置信度阈值
             cfd = {
-                "点击": 0.47,
+                "点击": 0.48,
                 "平移": 0.997,
-                "缩放": 0.85,
+                "缩放": 0.90,
                 "抓取": 0.992,
                 "旋转": 0.98,
                 "无": 0,

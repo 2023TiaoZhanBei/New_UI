@@ -52,7 +52,7 @@ class HandDetector:
                     xList.append(px)
                     yList.append(py)
 
-                ## bbox
+                # bbox
                 xmin, xmax = min(xList), max(xList)
                 ymin, ymax = min(yList), max(yList)
                 boxW, boxH = xmax - xmin, ymax - ymin
@@ -72,7 +72,7 @@ class HandDetector:
                     myHand["type"] = handType.classification[0].label
                 allHands.append(myHand)
 
-                ## draw
+                # draw
                 if draw:
                     self.mpDraw.draw_landmarks(
                         img, handLms, self.mpHands.HAND_CONNECTIONS
