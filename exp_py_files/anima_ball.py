@@ -10,24 +10,39 @@ from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication, QDialog, QLabel, QWidget
 
 warnings.filterwarnings("ignore")
+color_set = [
+    (83, 109, 254),
+    (124, 77, 255),
+    (255, 64, 129),
+    (255, 82, 82),
+    (83, 109, 254),
+]
+color_set_deep = [
+    (197, 202, 233),
+    (209, 196, 233),
+    (225, 190, 231),
+    (248, 187, 208),
+    (255, 205, 210),
+]
 
 
 class FBall(QDialog):
-    def __init__(self, size, color="red"):
+    def __init__(self, size, color="red", text="", hover_text=""):
         super(FBall, self).__init__()
         self.iniDragCor = [0, 0]
         self.ball_size = size
         self.ball_weight = QLabel(self)
         self.ball_weight.resize(size, size)
 
-        if not isinstance(color, str):
-            color = f'rgb{color}'
+        if isinstance(color, tuple):
+            color = f"rgb{color}"
 
         self.ball_weight.setStyleSheet(
             f"background-color: {color}; border-radius: {size // 2}px; "
         )
 
-        self.ball_weight.setText("点击")
+        self.ball_weight.setText(text)
+        self.ball_weight.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # 设置不能调整大小
@@ -36,6 +51,9 @@ class FBall(QDialog):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         self.anim = None
+
+        self.text = text
+        self.hover_text = hover_text
 
     def expand(self, offset_x, offset_y):
         self.anim = QPropertyAnimation(self, b"pos")
@@ -62,41 +80,28 @@ class FBall(QDialog):
         self.move(self.mapToParent(cor))
 
     def enterEvent(self, event: PySide6.QtGui.QEnterEvent) -> None:
-        print("enter")
+        self.ball_weight.setText(self.hover_text)
         return super().enterEvent(event)
 
     def leaveEvent(self, event: PySide6.QtCore.QEvent) -> None:
-        print("leave")
+        self.ball_weight.setText(self.text)
         return super().leaveEvent(event)
 
 
 @dataclass
 class MainLandBall(FBall):
-    color_set = [
-        (83, 109, 254),
-        (124, 77, 255),
-        (255, 64, 129),
-        (255, 82, 82),
-        (83, 109, 254),
-    ]
-    color_set_deep = [
-        (197, 202, 233),
-        (209, 196, 233),
-        (225, 190, 231),
-        (248, 187, 208),
-        (255, 205, 210),
-    ]
+
     offset = 180
 
-    def __init__(self, size, color="red", child_balls_num=5):
-        super(MainLandBall, self).__init__(size, color)
+    def __init__(self, size, color=color_set[1], child_balls_num=5, **kwargs):
+        super(MainLandBall, self).__init__(size, color, **kwargs)
 
         self.balls = []
         self.is_expanded = False
         self.move_start_time = 0
         # 创建多个小球
         for i in range(child_balls_num):
-            self.balls.append(FBall(size // 2, color=self.color_set[i]))
+            self.balls.append(FBall(size // 2, color=color_set[i]))
 
     def expand(self, move_length, pre_angle=40):
 
@@ -108,8 +113,8 @@ class MainLandBall(FBall):
         for i, (angle_i, color, color_deep) in enumerate(
             zip(
                 range(0 + self.offset, int(pre_angle * 5 + 1 + self.offset), pre_angle),
-                self.color_set,
-                self.color_set_deep,
+                color_set,
+                color_set_deep,
             )
         ):
             x_select = x0 + 1.1 * move_length * math.cos(angle_i * math.pi / 180)

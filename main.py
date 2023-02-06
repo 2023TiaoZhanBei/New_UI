@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         self.dragPos = None
         self.app = app
 
-        self.main_land_ball = MainLandBall(100, "blue")
+        self.main_land_ball = MainLandBall(88, text="等待...", hover_text="点击")
 
         # SET AS GLOBAL WIDGETS
         self.ui = Ui_MainWindow()
@@ -93,9 +93,9 @@ class MainWindow(QMainWindow):
         widgets.btn_save.setVisible(False)
 
         # 设置LeftBox上面的那个Left Box为中文
-        widgets.extraLabel.setText('关于软件')
+        widgets.extraLabel.setText("关于软件")
 
-        widgets.btn_share.setText('分享本软件')
+        widgets.btn_share.setText("分享本软件")
         widgets.btn_more.setVisible(False)
         widgets.btn_adjustments.setVisible(False)
 
