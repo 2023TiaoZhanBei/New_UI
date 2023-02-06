@@ -64,8 +64,8 @@ class MainWindow(QMainWindow):
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
 
         # APP NAME
-        title = "PyDracula - Modern GUI"
-        description = "PyDracula APP - Theme with colors based on Dracula for Python."
+        title = "会议控制系统"
+        description = "基于手势识别的会议控制系统——v1.0"
         # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -91,6 +91,13 @@ class MainWindow(QMainWindow):
         widgets.btn_home.setVisible(False)
         widgets.btn_widgets.setVisible(False)
         widgets.btn_save.setVisible(False)
+
+        # 设置LeftBox上面的那个Left Box为中文
+        widgets.extraLabel.setText('关于软件')
+
+        widgets.btn_share.setText('分享本软件')
+        widgets.btn_more.setVisible(False)
+        widgets.btn_adjustments.setVisible(False)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
@@ -286,7 +293,7 @@ class MainWindow(QMainWindow):
 
     def switch_camera_status(self):
         if self.eventRunning.isSet():
-            widgets.label_img.setText("Hello\nWorld")
+            widgets.label_img.setText("识别准备已就绪\n正在等待视频讯号输入...")
             widgets.btn_start.setText("开启识别")
             self.eventRunning.clear()
         else:

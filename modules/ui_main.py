@@ -1186,7 +1186,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 224, 224))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 349, 224))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1537,8 +1537,14 @@ class Ui_MainWindow(object):
 
         self.label_img = QLabel(self.frame_2)
         self.label_img.setObjectName(u"label_img")
-        self.label_img.setFont(font)
-        self.label_img.setStyleSheet(u"color: rgb(255, 255, 255);")
+        font6 = QFont()
+        font6.setFamilies([u"Segoe UI"])
+        font6.setPointSize(18)
+        font6.setBold(False)
+        font6.setItalic(False)
+        self.label_img.setFont(font6)
+        self.label_img.setStyleSheet(u"color: rgb(255, 255, 255);\n"
+"font: 18pt;")
         self.label_img.setAlignment(Qt.AlignCenter)
 
         self.gridLayout_5.addWidget(self.label_img, 0, 1, 1, 2)
@@ -1653,11 +1659,11 @@ class Ui_MainWindow(object):
         self.creditsLabel = QLabel(self.bottomBar)
         self.creditsLabel.setObjectName(u"creditsLabel")
         self.creditsLabel.setMaximumSize(QSize(16777215, 16))
-        font6 = QFont()
-        font6.setFamilies([u"Segoe UI"])
-        font6.setBold(False)
-        font6.setItalic(False)
-        self.creditsLabel.setFont(font6)
+        font7 = QFont()
+        font7.setFamilies([u"Segoe UI"])
+        font7.setBold(False)
+        font7.setItalic(False)
+        self.creditsLabel.setFont(font7)
         self.creditsLabel.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
         self.horizontalLayout_5.addWidget(self.creditsLabel)
@@ -1693,7 +1699,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1701,15 +1707,15 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.titleLeftApp.setText(QCoreApplication.translate("MainWindow", u"PyDracula", None))
+        self.titleLeftApp.setText(QCoreApplication.translate("MainWindow", u"\u4f1a\u8bae\u624b\u52bf\u63a7\u5236\u7cfb\u7edf", None))
         self.titleLeftDescription.setText(QCoreApplication.translate("MainWindow", u"Modern GUI / Flat Style", None))
-        self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
+        self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"\u9690\u85cf\u4fa7\u680f", None))
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.btn_widgets.setText(QCoreApplication.translate("MainWindow", u"Widgets", None))
-        self.btn_app.setText(QCoreApplication.translate("MainWindow", u"New", None))
+        self.btn_app.setText(QCoreApplication.translate("MainWindow", u"\u624b\u52bf\u8bc6\u522b", None))
         self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))
-        self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
-        self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
+        self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"\u9000\u51fa\u8f6f\u4ef6", None))
+        self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"\u8f6f\u4ef6\u8be6\u60c5", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
@@ -1725,16 +1731,12 @@ class Ui_MainWindow(object):
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Segoe UI'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">PyDracula</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">An interface created using Python and PySide (support for PyQt), and with colors based on the Dracula theme created by Zen"
-                        "o Rocha.</span></p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">\u57fa\u4e8e\u624b\u52bf\u8bc6\u522b\u7684\u4f1a\u8bae\u63a7\u5236\u7cfb\u7edf</span></p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">\u672c\u8f6f\u4ef6\u4e3a\u4e86\u5b9e\u73b0\u516c\u53f8"
+                        "\u5f00\u4f1a\u7814\u8ba8\u65f6\uff0c\u901a\u8fc7\u6280\u672f\u96c6\u6210\u5b9e\u73b0\u5728\u7ebf\u7684\u624b\u52bf\u8bc6\u522b\u6f14\u793a\u7cfb\u7edf\u3002\u80fd\u591f\u5b9e\u73b0\u591a\u4eba\u534f\u540c\u7814\u8ba8\u65f6PPT\u4eba\u4eba\u53ef\u63a7\uff0c\u5e76\u63d0\u4f9b\u4e86\u70b9\u51fb\u3001\u5e73\u79fb\u3001\u6293\u53d6\u3001\u65cb\u8f6c\u3001\u622a\u56fe\u3001\u7f29\u653e\u7b49\u64cd\u4f5c\uff0c\u964d\u4f4e\u591a\u4eba\u534f\u540c\u4ea4\u6d41\u7684\u969c\u788d\u3002\u8ba9\u53d1\u8a00\u4eba\u4e0ePPT\u653e\u6620\u5206\u9694\uff0c\u5b9e\u73b0\u4eba\u4eba\u53ef\u53d1\u8a00\uff0c\u4eba\u4eba\u53ef\u64cd\u63a7\uff0c\u4ece\u800c\u63d0\u9ad8\u56e2\u961f\u4ea4\u6d41\u6548\u7387\uff0c\u8ba9\u4f1a\u8bae\u53d8\u5f97\u9ad8\u6548\u7b80\u5355\u3002</span></p>\n"
 "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">MIT License</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#bd93f9;\">Created by: Wanderson M. Pimenta</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Convert UI</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#ffffff;\">pyside6-uic main.ui &gt; ui_main.py</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-in"
-                        "dent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Convert QRC</span></p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#ffffff;\">pyside6-rcc resources.qrc -o resources_rc.py</span></p></body></html>", None))
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:"
+                        "12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#bd93f9;\">Created by: GUET/SAI</span></p></body></html>", None))
         self.titleRightInfo.setText(QCoreApplication.translate("MainWindow", u"\u57fa\u4e8e\u624b\u52bf\u8bc6\u522b\u7684\u4f1a\u8bae\u63a7\u5236\u7cfb\u7edf\u2014\u2014v1.0", None))
 #if QT_CONFIG(tooltip)
         self.settingsTopBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Settings", None))
@@ -1828,8 +1830,8 @@ class Ui_MainWindow(object):
         self.btn_get_ctrl.setText(QCoreApplication.translate("MainWindow", u"\u83b7\u53d6\u63a7\u5236", None))
         self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"\u8bf7\u8f93\u5165\u7528\u6237\u540d", None))
         self.label_controller.setText(QCoreApplication.translate("MainWindow", u"\u6b63\u5728\u63a7\u5236\uff1a\u83b7\u53d6\u4e2d", None))
-        self.label_img.setText(QCoreApplication.translate("MainWindow", u"Hellow\n"
-"World", None))
+        self.label_img.setText(QCoreApplication.translate("MainWindow", u"\u8bc6\u522b\u51c6\u5907\u5df2\u5c31\u7eea\n"
+"\u6b63\u5728\u7b49\u5f85\u89c6\u9891\u8baf\u53f7\u8f93\u5165...", None))
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
