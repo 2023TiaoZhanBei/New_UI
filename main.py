@@ -30,7 +30,6 @@ from librarys import config_values as cfg
 from librarys.client import Client
 from librarys.process import Identify
 from librarys.reaction import Reaction
-
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 from modules import *
@@ -167,7 +166,7 @@ class MainWindow(QMainWindow):
         if self.name != "":
             self.app.client.send(self.name)  # 发送用户名
             widgets.btn_join.setEnabled(False)
-            widgets.lineEdit.setEnabled(False)
+            widgets.lineEdit_2.setEnabled(False)
             widgets.btn_join.setText("已加入会议")
             self.main_land_ball.show()
             self.isLogin = True
