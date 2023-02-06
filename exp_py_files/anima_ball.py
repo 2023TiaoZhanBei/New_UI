@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import PySide6
 from PySide6.QtCore import QEasingCurve, QPoint, QPropertyAnimation
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QApplication, QDialog, QWidget
+from PySide6.QtWidgets import QApplication, QDialog, QLabel, QWidget
 
 warnings.filterwarnings("ignore")
 
@@ -17,12 +17,17 @@ class FBall(QDialog):
         super(FBall, self).__init__()
         self.iniDragCor = [0, 0]
         self.ball_size = size
-        self.ball_weight = QWidget(self)
+        self.ball_weight = QLabel(self)
         self.ball_weight.resize(size, size)
+
+        if not isinstance(color, str):
+            color = f'rgb{color}'
 
         self.ball_weight.setStyleSheet(
             f"background-color: {color}; border-radius: {size // 2}px; "
         )
+
+        self.ball_weight.setText("点击")
 
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # 设置不能调整大小
@@ -91,7 +96,7 @@ class MainLandBall(FBall):
         self.move_start_time = 0
         # 创建多个小球
         for i in range(child_balls_num):
-            self.balls.append(FBall(size // 2))
+            self.balls.append(FBall(size // 2, color=self.color_set[i]))
 
     def expand(self, move_length, pre_angle=40):
 
