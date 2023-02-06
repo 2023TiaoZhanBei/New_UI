@@ -78,15 +78,16 @@ class MainWindow(QMainWindow):
         UIFunctions.uiDefinitions(self)
 
         # QTableWidget PARAMETERS
-        widgets.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # widgets.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         # BUTTONS CLICK
 
         # LEFT MENUS
-        widgets.btn_home.clicked.connect(self.buttonClick)
-        widgets.btn_widgets.clicked.connect(self.buttonClick)
-        widgets.btn_new.clicked.connect(self.buttonClick)
-        widgets.btn_save.clicked.connect(self.buttonClick)
+        # widgets.btn_home.clicked.connect(self.buttonClick)
+        # widgets.btn_widgets.clicked.connect(self.buttonClick)
+        # widgets.btn_new.clicked.connect(self.buttonClick)
+        # widgets.btn_save.clicked.connect(self.buttonClick)
+        widgets.btn_app.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
@@ -117,9 +118,9 @@ class MainWindow(QMainWindow):
             AppFunctions.setThemeHack(self)
 
         # SET HOME PAGE AND SELECT MENU
-        widgets.stackedWidget.setCurrentWidget(widgets.home)
-        widgets.btn_home.setStyleSheet(
-            UIFunctions.selectMenu(widgets.btn_home.styleSheet())
+        widgets.stackedWidget.setCurrentWidget(widgets.mainPage)
+        widgets.btn_app.setStyleSheet(
+            UIFunctions.selectMenu(widgets.btn_app.styleSheet())
         )
 
         # Init Values
@@ -139,7 +140,7 @@ class MainWindow(QMainWindow):
         self.target = ""
         widgets.btn_join.clicked.connect(self.join)
         self.ui.btn_pause.clicked.connect(self.switch_ctrl)
-        self.ui.checkBox.stateChanged.connect(self.switch_target)
+        self.ui.checkBox_2.stateChanged.connect(self.switch_target)
 
         self.reaction = Reaction()
         # self.action_tutorials.triggered.connect(self.show_tutorials_win)
@@ -206,7 +207,7 @@ class MainWindow(QMainWindow):
             self.show_error("未获得控制权")
 
     def switch_target(self):
-        if self.ui.checkBox.isChecked():
+        if self.ui.checkBox_2.isChecked():
             self.isTarget = True
         else:
             self.isTarget = False
@@ -309,25 +310,25 @@ class MainWindow(QMainWindow):
         btnName = btn.objectName()
 
         # SHOW HOME PAGE
-        if btnName == "btn_home":
-            widgets.stackedWidget.setCurrentWidget(widgets.home)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+        # if btnName == "btn_home":
+        #     widgets.stackedWidget.setCurrentWidget(widgets.home)
+        #     UIFunctions.resetStyle(self, btnName)
+        #     btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW WIDGETS PAGE
-        if btnName == "btn_widgets":
-            widgets.stackedWidget.setCurrentWidget(widgets.widgets)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+        # if btnName == "btn_widgets":
+        #     widgets.stackedWidget.setCurrentWidget(widgets.widgets)
+        #     UIFunctions.resetStyle(self, btnName)
+        #     btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW NEW PAGE
-        if btnName == "btn_new":
+        if btnName == "btn_app":
             widgets.stackedWidget.setCurrentWidget(widgets.mainPage)  # SET PAGE
             UIFunctions.resetStyle(self, btnName)  # RESET ANOTHER BUTTONS SELECTED
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))  # SELECT MENU
 
-        if btnName == "btn_save":
-            print("Save BTN clicked!")
+        # if btnName == "btn_save":
+        #     print("Save BTN clicked!")
 
         # PRINT BTN NAME
         print(f'Button "{btnName}" pressed!')
