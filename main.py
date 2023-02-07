@@ -139,6 +139,8 @@ class MainWindow(QMainWindow):
 
         # Init Values
         widgets.btn_start.clicked.connect(self.switch_camera_status)
+
+        widgets.btn_exit.clicked.connect(self.closeEvent)
         self.eventRunning = Event()
 
         self.member_list = []
@@ -162,6 +164,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, a0) -> None:
         self.app.client.stop_ping()
+        os._exit(0)
 
     def set_log(self, msg):
         widgets.textBrowser.append(
