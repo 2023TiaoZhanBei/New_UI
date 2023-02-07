@@ -21,7 +21,7 @@ from re import S
 from threading import Event, Thread
 
 import cv2
-from PySide6 import QtGui
+from PySide6 import QtCore, QtGui
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication
 
@@ -33,6 +33,7 @@ from librarys.reaction import Reaction
 # IMPORT / GUI AND MODULES AND WIDGETS
 # ///////////////////////////////////////////////////////////////
 from modules import *
+from splash_screen import Ui_SplashScreen
 from widgets import *
 
 os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100%
@@ -40,6 +41,9 @@ os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100
 
 # SET AS GLOBAL WIDGETS
 # ///////////////////////////////////////////////////////////////
+counter = 0
+
+# SPLASH SCREEN
 
 
 class MainWindow(QMainWindow):
@@ -361,8 +365,8 @@ class MainWindow(QMainWindow):
 
 
 class App:
-    def __init__(self):
-        self.qapp = QApplication(sys.argv)
+    def __init__(self, qapp=None):
+        self.qapp = qapp if qapp is not None else QApplication(sys.argv())
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         # self.qapp.setWindowIcon(QIcon(u":/icons/images/images/PyDracula.png"))
@@ -375,10 +379,89 @@ class App:
     def run(self, has_father_window=False):
         # self.identify.start()
         self.client.start()
-        if not has_father_window:
-            sys.exit(self.qapp.exec_())
+        # if not has_father_window:
+        #     sys.exit(self.qapp.exec_())
+
+
+class SplashScreen(QMainWindow):
+    def __init__(self, qapp):
+        QMainWindow.__init__(self)
+        self.ui = Ui_SplashScreen()
+        self.ui.setupUi(self)
+
+        self.qapp = qapp
+
+        # UI ==> INTERFACE CODES
+        #######################################################################
+
+        # REMOVE TITLE BAR
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+        # DROP SHADOW EFFECT
+        self.shadow = QGraphicsDropShadowEffect(self)
+        self.shadow.setBlurRadius(20)
+        self.shadow.setXOffset(0)
+        self.shadow.setYOffset(0)
+        self.shadow.setColor(QColor(0, 0, 0, 60))
+        self.ui.dropShadowFrame.setGraphicsEffect(self.shadow)
+
+        # QTIMER ==> START
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.progress)
+        # TIMER IN MILLISECONDS
+        self.timer.start(35)
+
+        # CHANGE DESCRIPTION
+
+        # Initial Text
+        self.ui.label_description.setText("<strong>WELCOME</strong> TO MY APPLICATION")
+
+        # Change Texts
+        QtCore.QTimer.singleShot(
+            1500,
+            lambda: self.ui.label_description.setText(
+                "<strong>LOADING</strong> DATABASE"
+            ),
+        )
+        QtCore.QTimer.singleShot(
+            3000,
+            lambda: self.ui.label_description.setText(
+                "<strong>LOADING</strong> USER INTERFACE"
+            ),
+        )
+
+        # SHOW ==> MAIN WINDOW
+        #######################################################################
+        self.show()
+        # ==> END ##
+
+    # ==> APP FUNCTIONS
+    #######################################################################
+    def progress(self):
+
+        global counter
+
+        # SET VALUE TO PROGRESS BAR
+        self.ui.progressBar.setValue(counter)
+
+        # CLOSE SPLASH SCREE AND OPEN APP
+        if counter > 100:
+            # STOP TIMER
+            self.timer.stop()
+
+            # SHOW MAIN WINDOW
+            app = App(qapp=self.qapp)
+            app.run()
+            # CLOSE SPLASH SCREEN
+            self.close()
+
+        # INCREASE COUNTER
+        counter += 2
 
 
 if __name__ == "__main__":
-    app = App()
-    app.run()
+    qapp = QApplication(sys.argv)
+    splash_win = SplashScreen(qapp=qapp)
+    splash_win.show()
+    sys.exit(qapp.exec_())
