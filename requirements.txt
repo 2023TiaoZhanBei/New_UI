@@ -1,8 +1,7 @@
-cx_Freeze==6.14.1
-mediapipe==0.9.0.1
-mediapipe_silicon==0.8.11
-numpy==1.24.1
-opencv_python_headless==4.7.0.68
-pynput==1.7.6
-PySide6==6.4.2
-torch==1.13.1
+
+mediapipe
+
+numpy
+opencv_python_headless
+pynput
+PySide6
